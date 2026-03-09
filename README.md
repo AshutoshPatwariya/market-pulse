@@ -14,14 +14,14 @@ Live website that auto-refreshes every weekday at 8:00 AM IST with:
 
 ## 🚀 One-Time Setup (30 minutes)
 
-### Step 1 — Get Your Gemini API Key (5 min)
+### Step 1 — Get Your OpenAI API Key (5 min)
 
-1. Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. **Copy the key** (starts with `AIza...`) — you'll need it in Step 4
+1. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+2. Sign in / sign up with your email
+3. Click **"Create new secret key"** → name it "market-pulse"
+4. **Copy the key** (starts with `sk-...`) — you'll need it in Step 4
 
-> 💰 **Cost**: Gemini 1.5 Pro has a **free tier** (60 requests/day). Daily report = 1 request/day → completely free to start. Paid tier is ~$0.00125 per 1K tokens if you exceed free limits.
+> 💰 **Cost**: GPT-4o-mini costs ~$0.00015 per 1K input tokens. One daily report ≈ ~$0.002/day = ~₹5/month. Extremely cheap.
 
 ---
 
@@ -61,7 +61,7 @@ git push -u origin main
 1. Go to your GitHub repo → **Settings** tab
 2. Left sidebar → **Secrets and variables** → **Actions**
 3. Click **"New repository secret"**
-4. Name: `GEMINI_API_KEY`
+4. Name: `OPENAI_API_KEY`
 5. Value: paste your API key from Step 1 (starts with `AIza...`)
 6. Click **"Add secret"**
 
@@ -152,7 +152,7 @@ market-pulse/
 
 **GitHub Actions failing?**
 - Check Actions tab → click the failed run → read the error log
-- Most common: API key not set correctly in Secrets (must be named `GEMINI_API_KEY`)
+- Most common: API key not set correctly in Secrets (must be named `OPENAI_API_KEY`)
 
 **Vercel not updating?**
 - Vercel auto-deploys on every git push — check the Deployments tab
@@ -163,7 +163,7 @@ market-pulse/
 - This self-corrects the next day
 
 **Upload not working?**
-- Make sure you entered your Gemini API key in the upload section
+- Make sure you entered your OpenAI API key in the upload section
 - The key must start with `AIza`
 
 ---
