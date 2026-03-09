@@ -41,8 +41,8 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          if [ ! -f "scripts/generate_report.py" ]; then
-            echo "ERROR: scripts/generate_report.py not found!"
+          if [ ! -f "generate_report.py" ]; then
+            echo "ERROR: generate_report.py not found!"
             echo "Your repo must contain: index.html, data/, scripts/, .github/, vercel.json"
             exit 1
           fi
