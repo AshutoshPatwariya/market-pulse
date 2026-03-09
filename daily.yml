@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install yfinance google-genai pytz
+          pip install yfinance openai pytz
 
       - name: Debug — show repo structure
         run: |
@@ -39,7 +39,7 @@ jobs:
 
       - name: Generate daily report
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ ! -f "scripts/generate_report.py" ]; then
             echo "ERROR: scripts/generate_report.py not found!"
