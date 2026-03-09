@@ -39,7 +39,6 @@ HOLDINGS_TICKERS = {
     "RELIANCE.NS":   {"name": "Reliance Industries", "qty":  6, "avg": 1393.76},
     "ROHLTD.NS":     {"name": "Royal Orchid Hotels", "qty": 10, "avg": 415.00},
     "SWIGGY.NS":     {"name": "Swiggy",              "qty":  1, "avg": 419.90},
-    "TATAMOTORS.BO": {"name": "Tata Motors",         "qty": 14, "avg": 493.81},
     "HINDCOPPER.NS": {"name": "Hindustan Copper",    "qty":  6, "avg": 532.60},
     "BLS.NS":        {"name": "BLS International",   "qty":  6, "avg": 314.00},
 }
