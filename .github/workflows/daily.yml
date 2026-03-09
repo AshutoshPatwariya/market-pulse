@@ -22,26 +22,44 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install yfinance google-generativeai requests pytz
+          pip install yfinance openai pytz
+
+      - name: Debug — show repo structure
+        run: |
+          echo "=== Repo root ==="
+          ls -la
+          echo "=== scripts/ folder ==="
+          ls -la scripts/ 2>/dev/null || echo "WARNING: scripts/ folder NOT FOUND"
+          echo "=== data/ folder ==="
+          ls -la data/ 2>/dev/null || echo "WARNING: data/ folder NOT FOUND"
+
+      - name: Create missing folders if needed
+        run: |
+          mkdir -p scripts data
 
       - name: Generate daily report
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          python3 generate_report.py
+          if [ ! -f "scripts/generate_report.py" ]; then
+            echo "ERROR: scripts/generate_report.py not found!"
+            echo "Your repo must contain: index.html, data/, scripts/, .github/, vercel.json"
+            exit 1
+          fi
+          python3 scripts/generate_report.py
 
       - name: Commit and push updated report
         run: |
           git config --local user.email "marketpulse-bot@github.com"
           git config --local user.name "Market Pulse Bot"
           git add data/report.json
-          git diff --staged --quiet || git commit -m "📊 Daily report — $(date +'%d %b %Y, %H:%M IST')"
+          git diff --staged --quiet || git commit -m "Daily report — $(date +'%d %b %Y, %H:%M IST')"
           git push
 
       - name: Report success
         if: success()
-        run: echo "✅ Market Pulse report generated and deployed successfully"
+        run: echo "Market Pulse report generated and deployed successfully"
 
       - name: Report failure
         if: failure()
-        run: echo "❌ Report generation failed — check logs above"
+        run: echo "Report generation failed — check logs above"
