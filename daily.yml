@@ -2,10 +2,8 @@ name: Daily Market Pulse Report
 
 on:
   schedule:
-    # 2:30 AM UTC = 8:00 AM IST, Monday–Friday only
     - cron: '30 2 * * 1-5'
   workflow_dispatch:
-    # Allow manual trigger from GitHub Actions UI anytime
 
 jobs:
   generate-report:
@@ -24,38 +22,30 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install yfinance google-generativeai requests pytz
+          pip install yfinance google-genai pytz
 
-      - name: Check if market is open today
-        id: market_check
+      - name: Debug — show repo structure
         run: |
-          python3 -c "
-          from datetime import date
-          import pytz
-          from datetime import datetime
-          ist = pytz.timezone('Asia/Kolkata')
-          now = datetime.now(ist)
-          # NSE holidays 2026 (add more as needed)
-          holidays = [
-              date(2026, 1, 26),  # Republic Day
-              date(2026, 3, 17),  # Holi
-              date(2026, 4, 2),   # Ram Navami
-              date(2026, 4, 14),  # Dr. Ambedkar Jayanti
-              date(2026, 5, 1),   # Maharashtra Day
-              date(2026, 8, 15),  # Independence Day
-              date(2026, 10, 2),  # Gandhi Jayanti
-              date(2026, 11, 4),  # Diwali Laxmi Puja
-              date(2026, 12, 25), # Christmas
-          ]
-          today = now.date()
-          is_open = now.weekday() < 5 and today not in holidays
-          print(f'MARKET_OPEN={str(is_open).lower()}')
-          " >> \$GITHUB_OUTPUT
+          echo "=== Repo root ==="
+          ls -la
+          echo "=== scripts/ folder ==="
+          ls -la scripts/ 2>/dev/null || echo "WARNING: scripts/ folder NOT FOUND"
+          echo "=== data/ folder ==="
+          ls -la data/ 2>/dev/null || echo "WARNING: data/ folder NOT FOUND"
+
+      - name: Create missing folders if needed
+        run: |
+          mkdir -p scripts data
 
       - name: Generate daily report
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          if [ ! -f "scripts/generate_report.py" ]; then
+            echo "ERROR: scripts/generate_report.py not found!"
+            echo "Your repo must contain: index.html, data/, scripts/, .github/, vercel.json"
+            exit 1
+          fi
           python3 scripts/generate_report.py
 
       - name: Commit and push updated report
@@ -63,13 +53,13 @@ jobs:
           git config --local user.email "marketpulse-bot@github.com"
           git config --local user.name "Market Pulse Bot"
           git add data/report.json
-          git diff --staged --quiet || git commit -m "📊 Daily report — $(date +'%d %b %Y, %H:%M IST')"
+          git diff --staged --quiet || git commit -m "Daily report — $(date +'%d %b %Y, %H:%M IST')"
           git push
 
       - name: Report success
         if: success()
-        run: echo "✅ Market Pulse report generated and deployed successfully"
+        run: echo "Market Pulse report generated and deployed successfully"
 
       - name: Report failure
         if: failure()
-        run: echo "❌ Report generation failed — check logs above"
+        run: echo "Report generation failed — check logs above"
